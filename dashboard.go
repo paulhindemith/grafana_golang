@@ -1,42 +1,40 @@
-package sdk
-
 /*
-   Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
-   Copyright 2016-2019 The Grafana SDK authors
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-	   http://www.apache.org/licenses/LICENSE-2.0
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-   ॐ तारे तुत्तारे तुरे स्व
+	Copyright 2016 Alexander I.Grafov <grafov@gmail.com>
+	Copyright 2016-2019 The Grafana SDK authors
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+	  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+	ॐ तारे तुत्तारे तुरे स्व
+
+	Modifications Copyright 2020 Paulhindemith
+
+	The original source code can be referenced from the link below.
+	https://github.com/grafana-tools/sdk/blob/bdcab199ffdec390d845266c855ee01af90135a1/rest-dashboard.go
+	The change history can be obtained by looking at the differences from the
+	following commit that added as the original source code.
+	52e2c561d60ac579d97a5eabeaae42f0ce0db531
 */
 
+package main
+
 import (
-	"bytes"
 	"encoding/json"
-	"strings"
-
-	"github.com/gosimple/slug"
-)
-
-var (
-	boardID uint
-)
-
-// Constants for templating
-const (
-	TemplatingHideNone = iota
-	TemplatingHideLabel
-	TemplatingHideVariable
+	"io/ioutil"
 )
 
 type (
 	// Board represents Grafana dashboard.
-	Board struct {
+	Dashboard struct {
 		ID              uint       `json:"id,omitempty"`
 		UID             string     `json:"uid,omitempty"`
 		Slug            string     `json:"slug"`
@@ -144,82 +142,18 @@ type link struct {
 // as string (ex "200px") or empty string
 type Height string
 
-func (h *Height) UnmarshalJSON(raw []byte) error {
-	if raw == nil || bytes.Compare(raw, []byte(`"null"`)) == 0 {
-		return nil
+func ReadDashboard(file string) (*Dashboard, error) {
+	var (
+		err       error
+		raw       []byte
+		dashboard Dashboard
+	)
+	if raw, err = ioutil.ReadFile(file); err != nil {
+		return nil, err
 	}
-	if raw[0] != '"' {
-		tmp := []byte{'"'}
-		raw = append(tmp, raw...)
-		raw = append(raw, byte('"'))
+	if err = json.Unmarshal(raw, &dashboard); err != nil {
+		return nil, err
 	}
-	var tmp string
-	err := json.Unmarshal(raw, &tmp)
-	*h = Height(tmp)
-	return err
-}
+	return &dashboard, nil
 
-func NewBoard(title string) *Board {
-	boardID++
-	return &Board{
-		ID:           boardID,
-		Title:        title,
-		Style:        "dark",
-		Timezone:     "browser",
-		Editable:     true,
-		HideControls: false,
-		Rows:         []*Row{}}
-}
-
-func (b *Board) RemoveTags(tags ...string) {
-	tagFound := make(map[string]int, len(b.Tags))
-	for i, tag := range b.Tags {
-		tagFound[tag] = i
-	}
-	for _, removeTag := range tags {
-		if i, ok := tagFound[removeTag]; ok {
-			b.Tags = append(b.Tags[:i], b.Tags[i+1:]...)
-		}
-	}
-}
-
-func (b *Board) AddTags(tags ...string) {
-	tagFound := make(map[string]bool, len(b.Tags))
-	for _, tag := range b.Tags {
-		tagFound[tag] = true
-	}
-	for _, tag := range tags {
-		if tagFound[tag] {
-			continue
-		}
-		b.Tags = append(b.Tags, tag)
-	}
-}
-
-func (b *Board) HasTag(tag string) bool {
-	for _, t := range b.Tags {
-		if t == tag {
-			return true
-		}
-	}
-	return false
-}
-
-func (b *Board) AddRow(title string) *Row {
-	if title == "" {
-		title = "New row"
-	}
-	row := &Row{
-		Title:    title,
-		Collapse: false,
-		Editable: true,
-		Height:   "250px",
-	}
-	b.Rows = append(b.Rows, row)
-	return row
-}
-
-func (b *Board) UpdateSlug() string {
-	b.Slug = strings.ToLower(slug.Make(b.Title))
-	return b.Slug
 }
