@@ -27,7 +27,7 @@ import (
 )
 
 const (
-	grafanaVersion = "6.6.0 "
+	grafanaVersion = "6.6.0"
 	TestEndpoint   = "http://localhost:3000"
 )
 
