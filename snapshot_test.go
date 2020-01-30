@@ -27,7 +27,7 @@ func TestCreateSnapshot(t *testing.T) {
 	client := NewClientWithOpt(TestEndpoint, http.DefaultClient, WithBasicAuth("admin", "admin"))
 	gp := os.Getenv("GOPATH")
 	dp := path.Join(gp, "src/github.com/paulhindemith/grafana-client/test/testdata-dashboard.json")
-	dashboard, err := ReadDashboard(dp)
+	dashboard, err := ReadDashboardFile(dp)
 	if err != nil {
 		t.Fatal(err.Error())
 	}

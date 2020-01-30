@@ -17,39 +17,31 @@ limitations under the License.
 package main
 
 import (
-	"net/http"
+	"os"
+	"path"
 	"testing"
 )
 
-func TestCreateDatasource(t *testing.T) {
-	client := NewClientWithOpt(TestEndpoint, http.DefaultClient, WithBasicAuth("admin", "admin"))
-	ds := &Datasource{
-		Name:   "prometheus",
-		Type:   "prometheus",
-		Access: "proxy",
-		URL:    "http://prometheus:9090",
-	}
-
-	_, err := client.CreateDatasource(ds)
+func TestReadTokenFile(t *testing.T) {
+	gp := os.Getenv("GOPATH")
+	tp := path.Join(gp, "src/github.com/paulhindemith/grafana-client/test/testdata-token.txt")
+	token, err := ReadTokenFile(tp)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
-	defer func() {
-		if err := TeardownDatasource(client); err != nil {
-			t.Fatal(err.Error())
-		}
-	}()
+	if token == "" {
+		t.Fatal("Token is not read well.")
+	}
 }
 
-func TeardownDatasource(client *Client) error {
-	datasoruces, err := client.GetDatasources()
+func TestReadDashboardFile(t *testing.T) {
+	gp := os.Getenv("GOPATH")
+	dp := path.Join(gp, "src/github.com/paulhindemith/grafana-client/test/testdata-dashboard.json")
+	db, err := ReadDashboardFile(dp)
 	if err != nil {
-		return err
+		t.Fatal(err.Error())
 	}
-	for _, d := range datasoruces {
-		if err := client.DeleteDatasource(d.ID); err != nil {
-			return err
-		}
+	if db.UID == "" {
+		t.Fatal("Dashboard is not read well.")
 	}
-	return nil
 }

@@ -18,38 +18,32 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
-	"net/http"
+	"io/ioutil"
 )
 
-type HealthResult struct {
-	Commit   string         `json:"commit"`
-	Database DatabaseStatus `json:"database"`
-	Version  string         `json:"version"`
+func ReadTokenFile(file string) (string, error) {
+	var (
+		err error
+		raw []byte
+	)
+	if raw, err = ioutil.ReadFile(file); err != nil {
+		return "", err
+	}
+	return string(raw), nil
 }
 
-type DatabaseStatus string
-
-const (
-	DatabaseStatusOK DatabaseStatus = "ok"
-)
-
-func (r *Client) Health() (*HealthResult, error) {
-	var err error
-
-	raw, code, err := r.Get("api/health", nil)
-	if err != nil {
+func ReadDashboardFile(file string) (*Dashboard, error) {
+	var (
+		err       error
+		raw       []byte
+		dashboard Dashboard
+	)
+	if raw, err = ioutil.ReadFile(file); err != nil {
 		return nil, err
 	}
-
-	if code != http.StatusOK {
-		return nil, fmt.Errorf("HTTP error %d: returns %s", code, raw)
-	}
-
-	var resp HealthResult
-	if err = json.Unmarshal(raw, &resp); err != nil {
+	if err = json.Unmarshal(raw, &dashboard); err != nil {
 		return nil, err
 	}
+	return &dashboard, nil
 
-	return &resp, nil
 }

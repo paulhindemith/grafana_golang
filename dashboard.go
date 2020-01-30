@@ -27,11 +27,6 @@
 
 package main
 
-import (
-	"encoding/json"
-	"io/ioutil"
-)
-
 type (
 	// Board represents Grafana dashboard.
 	Dashboard struct {
@@ -141,19 +136,3 @@ type link struct {
 // Height of rows maybe passed as number (ex 200) or
 // as string (ex "200px") or empty string
 type Height string
-
-func ReadDashboard(file string) (*Dashboard, error) {
-	var (
-		err       error
-		raw       []byte
-		dashboard Dashboard
-	)
-	if raw, err = ioutil.ReadFile(file); err != nil {
-		return nil, err
-	}
-	if err = json.Unmarshal(raw, &dashboard); err != nil {
-		return nil, err
-	}
-	return &dashboard, nil
-
-}
