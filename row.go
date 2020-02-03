@@ -25,7 +25,7 @@
 	52e2c561d60ac579d97a5eabeaae42f0ce0db531
 */
 
-package main
+package grafana_golang
 
 // Row represents single row of Grafana dashboard.
 type Row struct {
