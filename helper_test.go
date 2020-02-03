@@ -24,7 +24,7 @@ import (
 
 func TestReadTokenFile(t *testing.T) {
 	gp := os.Getenv("GOPATH")
-	tp := path.Join(gp, "src/github.com/paulhindemith/grafana-client/test/testdata-token.txt")
+	tp := path.Join(gp, "src/github.com/paulhindemith/grafana_golang/test/testdata-token.txt")
 	token, err := ReadTokenFile(tp)
 	if err != nil {
 		t.Fatal(err.Error())
@@ -36,7 +36,7 @@ func TestReadTokenFile(t *testing.T) {
 
 func TestReadDashboardFile(t *testing.T) {
 	gp := os.Getenv("GOPATH")
-	dp := path.Join(gp, "src/github.com/paulhindemith/grafana-client/test/testdata-dashboard.json")
+	dp := path.Join(gp, "src/github.com/paulhindemith/grafana_golang/test/testdata-dashboard.json")
 	db, err := ReadDashboardFile(dp)
 	if err != nil {
 		t.Fatal(err.Error())

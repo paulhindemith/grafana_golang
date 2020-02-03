@@ -23,39 +23,44 @@ import (
 
 func TestClientWithBasicAuth(t *testing.T) {
 	var testcases = []struct {
+		name          string
 		reqOpt        func(req *http.Request)
 		expectedError bool
 		errorMsg      string
 	}{
 		{
+			name:          "{auth: false}",
 			reqOpt:        func(req *http.Request) {},
 			expectedError: true,
 			errorMsg:      "HTTP error 425: returns unauthorizeds",
 		},
 		{
+			name:          "{auth: true}",
 			reqOpt:        WithBasicAuth("admin", "admin"),
 			expectedError: false,
 		},
 	}
 
 	for _, tc := range testcases {
-		client := NewClientWithOpt(TestEndpoint, http.DefaultClient, tc.reqOpt)
-		apiKeyInfo := &APIKeyInfo{
-			Name:          "testKey",
-			Role:          AdminRole,
-			SecondsToLive: 0,
-		}
-		apiKey, err := client.CreateAPIKey(apiKeyInfo)
-		if tc.expectedError && err == nil {
-			t.Fatal("error does not exist.")
-		} else if !tc.expectedError && err != nil {
-			t.Fatal(err.Error())
-		}
-		if apiKey != nil {
-			if err := TeardownAPIKey(client); err != nil {
+		t.Run(tc.name, func(t *testing.T) {
+			client := NewClientWithOpt(TestEndpoint, http.DefaultClient, tc.reqOpt)
+			apiKeyInfo := &APIKeyInfo{
+				Name:          "testKey",
+				Role:          AdminRole,
+				SecondsToLive: 0,
+			}
+			apiKey, err := client.CreateAPIKey(apiKeyInfo)
+			if tc.expectedError && err == nil {
+				t.Fatal("error does not exist.")
+			} else if !tc.expectedError && err != nil {
 				t.Fatal(err.Error())
 			}
-		}
+			if apiKey != nil {
+				if err := TeardownAPIKey(client); err != nil {
+					t.Fatal(err.Error())
+				}
+			}
+		})
 	}
 }
 
