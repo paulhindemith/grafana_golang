@@ -32,7 +32,6 @@ const (
 )
 
 func TestMain(m *testing.M) {
-	println("hello")
 	setup()
 	ret := m.Run()
 	teardown()

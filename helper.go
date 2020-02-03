@@ -45,5 +45,43 @@ func ReadDashboardFile(file string) (*Dashboard, error) {
 		return nil, err
 	}
 	return &dashboard, nil
+}
 
+func TeardownAPIKey(client *Client) error {
+	apiKeyInfos, err := client.GetAPIKeys()
+	if err != nil {
+		return err
+	}
+	for _, i := range apiKeyInfos {
+		if err := client.DeleteAPIKey(i.ID); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func TeardownSnapshot(client *Client) error {
+	snapshots, err := client.GetSnapshots()
+	if err != nil {
+		return err
+	}
+	for _, s := range snapshots {
+		if err := client.DeleteSnapshot(s.Key); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func TeardownDatasource(client *Client) error {
+	datasoruces, err := client.GetDatasources()
+	if err != nil {
+		return err
+	}
+	for _, d := range datasoruces {
+		if err := client.DeleteDatasource(d.ID); err != nil {
+			return err
+		}
+	}
+	return nil
 }

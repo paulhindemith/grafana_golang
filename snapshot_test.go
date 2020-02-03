@@ -48,16 +48,3 @@ func TestCreateSnapshot(t *testing.T) {
 		}
 	}()
 }
-
-func TeardownSnapshot(client *Client) error {
-	snapshots, err := client.GetSnapshots()
-	if err != nil {
-		return err
-	}
-	for _, s := range snapshots {
-		if err := client.DeleteSnapshot(s.Key); err != nil {
-			return err
-		}
-	}
-	return nil
-}

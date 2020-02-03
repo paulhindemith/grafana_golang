@@ -39,16 +39,3 @@ func TestCreateAPIKey(t *testing.T) {
 		}
 	}()
 }
-
-func TeardownAPIKey(client *Client) error {
-	apiKeyInfos, err := client.GetAPIKeys()
-	if err != nil {
-		return err
-	}
-	for _, i := range apiKeyInfos {
-		if err := client.DeleteAPIKey(i.ID); err != nil {
-			return err
-		}
-	}
-	return nil
-}

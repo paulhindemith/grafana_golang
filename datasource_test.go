@@ -40,16 +40,3 @@ func TestCreateDatasource(t *testing.T) {
 		}
 	}()
 }
-
-func TeardownDatasource(client *Client) error {
-	datasoruces, err := client.GetDatasources()
-	if err != nil {
-		return err
-	}
-	for _, d := range datasoruces {
-		if err := client.DeleteDatasource(d.ID); err != nil {
-			return err
-		}
-	}
-	return nil
-}
