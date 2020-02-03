@@ -22,10 +22,10 @@ import (
 	"testing"
 )
 
-func TestReadTokenFile(t *testing.T) {
+func TestReadTextFile(t *testing.T) {
 	gp := os.Getenv("GOPATH")
 	tp := path.Join(gp, "src/github.com/paulhindemith/grafana_golang/test/testdata-token.txt")
-	token, err := ReadTokenFile(tp)
+	token, err := ReadTextFile(tp)
 	if err != nil {
 		t.Fatal(err.Error())
 	}

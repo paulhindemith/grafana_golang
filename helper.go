@@ -21,7 +21,7 @@ import (
 	"io/ioutil"
 )
 
-func ReadTokenFile(file string) (string, error) {
+func ReadTextFile(file string) (string, error) {
 	var (
 		err error
 		raw []byte
