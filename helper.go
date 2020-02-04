@@ -47,6 +47,20 @@ func ReadDashboardFile(file string) (*Dashboard, error) {
 	return &dashboard, nil
 }
 
+func Teardown(client *Client) error {
+	var err error
+	if err = TeardownAPIKey(client); err != nil {
+		return err
+	}
+	if err = TeardownSnapshot(client); err != nil {
+		return err
+	}
+	if err = TeardownDatasource(client); err != nil {
+		return err
+	}
+	return nil
+}
+
 func TeardownAPIKey(client *Client) error {
 	apiKeyInfos, err := client.GetAPIKeys()
 	if err != nil {

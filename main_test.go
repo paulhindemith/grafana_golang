@@ -59,33 +59,16 @@ func setup() {
 		fmt.Print(perr.Error())
 		return
 	}
-	if err := TeardownAPIKey(client); err != nil {
+	if err := Teardown(client); err != nil {
 		fmt.Print(err.Error())
 		return
 	}
-	if err := TeardownDatasource(client); err != nil {
-		fmt.Print(err.Error())
-		return
-	}
-	if err := TeardownSnapshot(client); err != nil {
-		fmt.Print(err.Error())
-		return
-	}
-
 }
 
 func teardown() {
 	client := NewClientWithOpt(TestEndpoint, http.DefaultClient, WithBasicAuth("admin", "admin"))
 
-	if err := TeardownAPIKey(client); err != nil {
-		fmt.Print(err.Error())
-		return
-	}
-	if err := TeardownDatasource(client); err != nil {
-		fmt.Print(err.Error())
-		return
-	}
-	if err := TeardownSnapshot(client); err != nil {
+	if err := Teardown(client); err != nil {
 		fmt.Print(err.Error())
 		return
 	}
