@@ -36,24 +36,43 @@ import (
 // Datasource as described in the doc
 // http://docs.grafana.org/reference/http_api/#get-all-datasources
 type Datasource struct {
-	ID                uint        `json:"id"`
-	OrgID             uint        `json:"orgId"`
-	Name              string      `json:"name"`
-	Type              string      `json:"type"`
-	TypeLogoURL       string      `json:"typeLogoUrl"`
-	Access            string      `json:"access"` // direct or proxy
-	URL               string      `json:"url"`
-	Password          string      `json:"password,omitempty"`
-	User              string      `json:"user,omitempty"`
-	Database          string      `json:"database,omitempty"`
-	BasicAuth         bool        `json:"basicAuth,omitempty"`
-	BasicAuthUser     string      `json:"basicAuthUser,omitempty"`
-	BasicAuthPassword string      `json:"basicAuthPassword,omitempty"`
-	IsDefault         bool        `json:"isDefault"`
-	JSONData          interface{} `json:"jsonData"`
-	SecureJSONData    interface{} `json:"secureJsonData"`
-	Version           interface{} `json:"version,omitempty"`
-	ReadOnly          interface{} `json:"readOnly,omitempty"`
+	ID                uint              `json:"id"`
+	OrgID             uint              `json:"orgId"`
+	Name              string            `json:"name"`
+	Type              string            `json:"type"`
+	TypeLogoURL       string            `json:"typeLogoUrl"`
+	Access            string            `json:"access"` // direct or proxy
+	URL               string            `json:"url"`
+	Password          string            `json:"password,omitempty"`
+	User              string            `json:"user,omitempty"`
+	Database          string            `json:"database,omitempty"`
+	BasicAuth         bool              `json:"basicAuth,omitempty"`
+	BasicAuthUser     string            `json:"basicAuthUser,omitempty"`
+	BasicAuthPassword string            `json:"basicAuthPassword,omitempty"`
+	IsDefault         bool              `json:"isDefault"`
+	JSONData          *JSONData         `json:"jsonData"`
+	SecureJSONFields  *SecureJSONFields `json:"secureJsonFields"`
+	SecureJSONData    *SecureJSONData   `json:"secureJsonData"`
+	Version           int               `json:"version,omitempty"`
+	ReadOnly          bool              `json:"readOnly,omitempty"`
+}
+
+type JSONData struct {
+	TlsAuth           bool   `json:"tlsAuth,omitempty"`
+	HttpMethod        string `json:"httpMethod,omitempty"`
+	TlsAuthWithCACert bool   `json:"tlsAuthWithCACert,omitempty"`
+}
+
+type SecureJSONFields struct {
+	TlsClientKey  bool `json:"tlsClientKey,omitempty"`
+	TlsClientCert bool `json:"tlsClientCert,omitempty"`
+	TlsCACert     bool `json:"tlsCACert,omitempty"`
+}
+
+type SecureJSONData struct {
+	TlsClientKey  string `json:"tlsClientKey,omitempty"`
+	TlsClientCert string `json:"tlsClientCert,omitempty"`
+	TlsCACert     string `json:"tlsCACert,omitempty"`
 }
 
 type DatasourceResult struct {
